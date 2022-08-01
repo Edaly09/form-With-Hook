@@ -3,61 +3,115 @@ import { useState } from "react"
 const App = () =>{
   // ICI j'initialise tous mes states 
 
-const [email, setemail] = useState("")
-const [password, setpassword] = useState("")
-const [rememberMe, setrememberMe] = useState(false)
-const [emailIsValid, setemailIsValid] = useState(false)
-const [passwordIsValid, setpasswordIsValid] = useState(false)
-const [isSubmitted, setisSubmitted] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [rememberMe, setRememberMe] = useState(false)
+  const [isEmailValid, setIsEmailValid] = useState(false)
+  const [isPasswordValid, setIsPasswordValid] = useState(false)
+  const [isSubmitted, setIsSubmitted] = useState(false)
+const [firstName, setfirstName] = useState("")
+const [lastName, setlastName] = useState("")
+
+
 
 // C'est ici je vais faire toutes mes fonctions juste au dessus du return
 
-const handleEmailChange = (e) =>{
-  const value = e.target.value
+// Ici je vais une fonction pour gérer le changement de mot de l'email
+
+
+const handleEmailChange = e => {
+  const { value } = e.target
   const regEx = new RegExp(/^[\w\.]+@([\w-]+\.)+[\w-]{2,4}$/)
   const isValid = regEx.test(value)
-  setemail(value)
-  console.log(email)
-}
-const handlepasswordChange = (e) =>{
-  const value = e.target.value
-  setpassword(value)
-  if(value.length > 5){
-    console.log(password)
-    setpasswordIsValid(true)
-  }
-  console.log(passwordIsValid);
 
+  setEmail(value)
+  setIsEmailValid(isValid)
 }
-const handleSubmit = (e)=>{
+// Ici je vais une fonction pour gérer le changement de mot de pass
+
+const handlePasswordChange = e => {
+  const { value } = e.target
+  const isValid = value.length > 5
+
+  setPassword(value)
+  setIsPasswordValid(isValid)
+}
+// Ici je vais une fonction pour gérer le changement de l'input remember me
+
+const handleRememberMeChange = e => {
+  const { checked } = e.target
+  setRememberMe(checked)
+}
+// Ici je vais une fonction pour gérer l'envoie du formulaire
+const handleSubmit = e => {
   e.preventDefault()
 
+  const isValid = isPasswordValid && isEmailValid
+  setIsSubmitted(isValid)
 }
   
 
 return(
+ 
+
   <>
-  <h1>Mon formulaire</h1>
+  <h1 className='text-center mt-5'>Mon formulaire</h1>
+      <h2 className='text-center mt-5'>Login</h2>
+      <div className='container d-flex justify-content-center mt-5'>
+        {!isSubmitted ? (
+          <form className='col-10' onSubmit={handleSubmit}>
+            <div className='mb-3'>
+              <label htmlFor='email' className='form-label'>
+                Email address
+              </label>
+              <input
+                type='email'
+                className={`form-control ${
+                  isEmailValid ? 'is-valid' : 'is-invalid'
+                }`}
+                id='email'
+                onChange={handleEmailChange}
+                value={email}
+              />
+            </div>
+            <div className='mb-3'>
+              <label htmlFor='password' className='form-label'>
+                Password
+              </label>
+              <input
+                type='password'
+                className={`form-control ${
+                  isPasswordValid ? 'is-valid' : 'is-invalid'
+                }`}
+                id='password'
+                onChange={handlePasswordChange}
+                value={password}
+              />
+            </div>
+            <div className='mb-3 form-check'>
+              <input
+                type='checkbox'
+                className='form-check-input'
+                id='remember-me'
+                onChange={handleRememberMeChange}
+                checked={rememberMe}
+              />
+              <label className='form-check-label' htmlFor='remember-me'>
+                Remember me
+              </label>
+            </div>
+            <button type='submit' className='btn btn-primary'>
+              Submit
+            </button>
+          </form>
+        ) : (
+          <p>Bienvenue, {email}!</p>
+        )}
+      </div>
+    </>
+  
 
-  <form onClick={handleSubmit}>
-  <label>
-    Email:
-    <input type="email" name="name" onChange={handleEmailChange}/>
-  </label>
-  <label>
-    Password:
-    <input type="password" name="name" onChange={handlepasswordChange} />
-  </label>
 
-  <label>
-    Remember me:
-    <input type="checkbox" name="name" />
-  </label>
-
-  <button  type="submit" value="Submit" onClick={handleSubmit}> Envoyer</button>
-
-</form>
-  </>
 )
 
 }
